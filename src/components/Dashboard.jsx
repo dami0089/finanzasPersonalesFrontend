@@ -3,7 +3,9 @@ import { RecentTransactions } from "./RecentTransactions";
 import { MonthlyExpensesChart } from "./MonthlyExpensesChart";
 import { CategoryExpensesChart } from "./CategoryExpensesChart";
 import {
+  Bars3Icon,
   CogIcon,
+  CreditCardIcon,
   PlusIcon,
 } from "../../node_modules/@heroicons/react/16/solid/esm/index";
 import useGastos from "../hooks/useGastos";
@@ -11,21 +13,35 @@ import ModalNuevoGasto from "./ModalNuevoGasto";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import ModalEditarGasto from "./ModalEditarGasto";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useUsuarios from "../hooks/useUsuarios";
+import ModalNuevoGasto0 from "./ModalNuevoGasto0";
+import ModalNuevoMercado from "./ModalNuevoMercado";
+import ModalNuevoSuperMercado from "./ModalNuevoSuperMercado";
+import ModalNuevoProductoMercado from "./ModalNuevoProductoMercado";
+import ModalCargarImporte from "./ModalCargarImporte";
 
 export const Dashboard = () => {
   const {
     modalGasto,
-    handleModalGasto,
+    modalGasto0,
+    handleModalGasto0,
     modalEditarGasto,
     dash,
     obtenerDash,
     actualizarListadoMovimientos,
     setActualizarListadoMovimientos,
+    modalMercado,
+    modalNuevoSuperMercado,
+    modalNuevoProductoMercado,
+    modalImporteProducto,
   } = useGastos();
 
   const { auth, setIdUsuario } = useUsuarios();
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleDropdown = () => setIsOpen(!isOpen);
 
   useEffect(() => {
     const datos = async () => {
@@ -49,12 +65,17 @@ export const Dashboard = () => {
 
   const handleGasto = (e) => {
     e.preventDefault();
-    handleModalGasto();
+    handleModalGasto0();
   };
 
   const handleNavegarConfig = (e) => {
     e.preventDefault();
     navigate("/configuracion");
+  };
+
+  const handleNavegarTarj = (e) => {
+    e.preventDefault();
+    navigate("/tarjetas");
   };
 
   return (
@@ -69,18 +90,61 @@ export const Dashboard = () => {
             </h1>
           </div>
           <div>
+            {/* Botón para desplegar el menú en dispositivos pequeños */}
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-l focus:outline-none focus:shadow-outline mr-2 inline-flex items-center"
-              onClick={(e) => handleGasto(e)}
+              className="sm:inline-flex md:hidden bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              onClick={toggleDropdown}
             >
-              <PlusIcon className="w-5 h-5 " />
+              <Bars3Icon className="w-5 h-5" />
             </button>
-            <button
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-r focus:outline-none focus:shadow-outline inline-flex items-center"
-              onClick={(e) => handleNavegarConfig(e)}
+
+            {/* Menú desplegable para dispositivos pequeños */}
+            <div
+              className={`absolute right-0 w-48 py-2 mt-2 bg-white rounded-lg shadow-xl ${
+                isOpen ? "block" : "hidden"
+              } sm:block md:hidden`}
             >
-              <CogIcon className="w-5 h-5 " />
-            </button>
+              {/* <button
+                className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 w-full text-left"
+                onClick={(e) => handleNavegarTarj(e)}
+              >
+                Tarjetas
+              </button> */}
+              <button
+                className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 w-full text-left"
+                onClick={(e) => handleGasto(e)}
+              >
+                Nuevo Movimiento
+              </button>
+              <button
+                className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 w-full text-left"
+                onClick={(e) => handleNavegarConfig(e)}
+              >
+                Configuración
+              </button>
+            </div>
+
+            {/* Botones visibles solo en dispositivos más grandes */}
+            <div className="hidden md:flex">
+              {/* <button
+                className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-l focus:outline-none focus:shadow-outline mr-2 inline-flex items-center"
+                onClick={(e) => handleNavegarTarj(e)}
+              >
+                <CreditCardIcon className="w-5 h-5 " />
+              </button> */}
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline mr-2 inline-flex items-center"
+                onClick={(e) => handleGasto(e)}
+              >
+                <PlusIcon className="w-5 h-5 " />
+              </button>
+              <button
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-r focus:outline-none focus:shadow-outline inline-flex items-center"
+                onClick={(e) => handleNavegarConfig(e)}
+              >
+                <CogIcon className="w-5 h-5 " />
+              </button>
+            </div>
           </div>
         </div>
         {/* Tarjetas de Resumen */}
@@ -131,7 +195,12 @@ export const Dashboard = () => {
           <RecentTransactions />
         </div>
         {modalGasto ? <ModalNuevoGasto /> : null}
+        {modalGasto0 ? <ModalNuevoGasto0 /> : null}
         {modalEditarGasto ? <ModalEditarGasto /> : null}
+        {modalMercado ? <ModalNuevoMercado /> : null}
+        {modalNuevoSuperMercado ? <ModalNuevoSuperMercado /> : null}
+        {modalNuevoProductoMercado ? <ModalNuevoProductoMercado /> : null}
+        {modalImporteProducto ? <ModalCargarImporte /> : null}
       </div>
     </>
   );

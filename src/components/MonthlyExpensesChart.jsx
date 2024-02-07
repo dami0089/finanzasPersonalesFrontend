@@ -16,13 +16,23 @@ export const MonthlyExpensesChart = () => {
     labels: [],
     datasets: [],
   });
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const obtenerChart = async () => {
       await obtenerChatAcumulado(auth._id);
     };
     obtenerChart();
-  }, []); // Sin dependencias, se ejecuta solo en la carga del componente
+  }, []);
 
   useEffect(() => {
     const obtenerChart = async () => {
@@ -32,25 +42,25 @@ export const MonthlyExpensesChart = () => {
       }
     };
     obtenerChart();
-  }, [actualizarListadoMovimientos]); // Sin dependencias, se ejecuta solo en la carga del componente
+  }, [actualizarListadoMovimientos]);
 
   useEffect(() => {
-    // Esta función ahora se ejecuta cada vez que chartAcumulado se actualiza
     if (chartAcumulado && Object.keys(chartAcumulado).length) {
       prepararDatosParaGrafico();
     }
-  }, [chartAcumulado]); // Dependencia en chartAcumulado
+  }, [chartAcumulado, windowWidth]); // Ahora también depende de windowWidth
 
   const prepararDatosParaGrafico = () => {
     const labels = Object.keys(chartAcumulado);
     const data = Object.values(chartAcumulado);
+    const monthsToShow = windowWidth < 768 ? 3 : 12; // Cambiar a 768 por el breakpoint deseado
 
     setChartData({
-      labels,
+      labels: labels.slice(Math.max(labels.length - monthsToShow, 0)),
       datasets: [
         {
           label: "Gastos por mes $ ",
-          data,
+          data: data.slice(Math.max(data.length - monthsToShow, 0)),
           backgroundColor: "rgba(54, 162, 235, 0.2)",
           borderColor: "rgba(54, 162, 235, 1)",
           borderWidth: 1,
@@ -69,7 +79,7 @@ export const MonthlyExpensesChart = () => {
   };
 
   return (
-    <div style={{ height: "500px", maxHeight: "500px" }}>
+    <div style={{ height: "800px", maxHeight: "500px" }}>
       <Bar data={chartData} options={options} />
     </div>
   );

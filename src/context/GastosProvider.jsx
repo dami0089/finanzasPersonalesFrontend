@@ -23,6 +23,65 @@ const GastosProvider = ({ children }) => {
   const [categoriaGasto, setCategoriaGasto] = useState("");
   const [importeGasto, setImporteGasto] = useState("");
   const [idGastoEditar, setIdGastoEditar] = useState("");
+  const [modalNuevaTarjeta, setModalNuevaTarjeta] = useState(false);
+
+  const [nombreSubCategoria, setNombreSubCategoria] = useState("");
+
+  const [modalSubCategoria, setModalSubCategoria] = useState(false);
+
+  const [modalEditarSubCategoria, setModalEditarSubCategoria] = useState(false);
+
+  const [idSubCategoria, setIdSubCategoria] = useState("");
+
+  const [modalGasto0, setModalGasto0] = useState(false);
+
+  const [modalMercado, setModalMercado] = useState(false);
+
+  const [modalNuevoSuperMercado, setModalNuevoSuperMercado] = useState(false);
+  const [nombreSupermercado, setNombreSupermercado] = useState("");
+  const [direccionSupermercado, setDireccionSupermercado] = useState("");
+  const [idProductoFiltrado, setIdProductoFiltrado] = useState("");
+  const [modalNuevoProductoMercado, setModalNuevoProductoMercado] =
+    useState(false);
+
+  const [registrarProductos, setRegistrarProductos] = useState("no");
+
+  const [productosSeleccionados, setProductosSeleccionados] = useState([]);
+
+  const [modalImporteProducto, setModalImporteProducto] = useState("");
+  const [nombreProd, setNombreProd] = useState("");
+  const [idProducto, setIdProducto] = useState("");
+  const [importeProducto, setImporteProducto] = useState("");
+
+  const [idSuperMercado, setIdSuperMercado] = useState("");
+
+  const handleModalImporteProducto = () => {
+    setModalImporteProducto(!modalImporteProducto);
+  };
+
+  const handleModalNuevoProductoMercado = () => {
+    setModalNuevoProductoMercado(!modalNuevoProductoMercado);
+  };
+
+  const handleModalSuperMercado = () => {
+    setModalNuevoSuperMercado(!modalNuevoSuperMercado);
+  };
+
+  const handleModalMercado = () => {
+    setModalMercado(!modalMercado);
+  };
+
+  const handleModalEditarSubCategoria = () => {
+    setModalEditarSubCategoria(!modalEditarSubCategoria);
+  };
+
+  const handleModalSubCategoria = () => {
+    setModalSubCategoria(!modalSubCategoria);
+  };
+
+  const handleModalNuevaTarjeta = () => {
+    setModalNuevaTarjeta(!modalNuevaTarjeta);
+  };
 
   const handleModalEditarGasto = () => {
     setModalEditarGasto(!modalEditarGasto);
@@ -30,6 +89,10 @@ const GastosProvider = ({ children }) => {
 
   const handleModalGasto = () => {
     setModalGasto(!modalGasto);
+  };
+
+  const handleModalGasto0 = () => {
+    setModalGasto0(!modalGasto0);
   };
 
   const handleModalCategoria = () => {
@@ -131,6 +194,50 @@ const GastosProvider = ({ children }) => {
     }
   };
 
+  const nuevaSubCategoria = async (categoria, nombreSubCategoria, usuario) => {
+    const info = {
+      categoria,
+      nombreSubCategoria,
+      usuario,
+    };
+
+    try {
+      // const token = localStorage.getItem("token");
+      // if (!token) return;
+      // const config = {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      // };
+      const { data } = await clienteAxios.post(
+        `gastos/nueva-sub-categoria/`,
+        info
+      );
+
+      toast.success(data.msg, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (error) {
+      toast.error(error.response.data.msg, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
   const [categorias, setCategorias] = useState([]);
 
   const obtenerCategorias = async (id) => {
@@ -148,6 +255,37 @@ const GastosProvider = ({ children }) => {
       );
 
       setCategorias(data);
+    } catch (error) {
+      toast.error(error.response.data.msg, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
+  const [categoriaMercado, setCategoriaMercado] = useState([]);
+
+  const obtenerCategoriaMercado = async (id) => {
+    try {
+      // const token = localStorage.getItem("token");
+      // if (!token) return;
+      // const config = {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      // };
+      const { data } = await clienteAxios.get(
+        `gastos/obtener-categoria-mercado/${id}`,
+        {}
+      );
+
+      setCategoriaMercado(data);
     } catch (error) {
       toast.error(error.response.data.msg, {
         position: "top-right",
@@ -200,6 +338,44 @@ const GastosProvider = ({ children }) => {
     }
   };
 
+  const editarSubCategoria = async (id, nombre) => {
+    try {
+      // const token = localStorage.getItem("token");
+      // if (!token) return;
+      // const config = {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      // };
+      const { data } = await clienteAxios.post(
+        `gastos/editar-sub-categoria/${id}`,
+        { nombre }
+      );
+
+      toast.success(data.msg, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (error) {
+      toast.error(error.response.data.msg, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
   const eliminarCategoria = async (id) => {
     try {
       // const token = localStorage.getItem("token");
@@ -211,6 +387,43 @@ const GastosProvider = ({ children }) => {
       // };
       const { data } = await clienteAxios.delete(
         `gastos/eliminar-categoria/${id}`,
+        {}
+      );
+
+      toast.success(data.msg, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (error) {
+      toast.error(error.response.data.msg, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+  const eliminarSubCategoria = async (id) => {
+    try {
+      // const token = localStorage.getItem("token");
+      // if (!token) return;
+      // const config = {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      // };
+      const { data } = await clienteAxios.delete(
+        `gastos/eliminar-sub-categoria/${id}`,
         {}
       );
 
@@ -450,6 +663,189 @@ const GastosProvider = ({ children }) => {
     }
   };
 
+  const nuevoSupermercado = async (nombre, direccion, usuario) => {
+    const info = {
+      nombre,
+      direccion,
+      usuario,
+    };
+    try {
+      // const token = localStorage.getItem("token");
+      // if (!token) return;
+      // const config = {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      // };
+      const { data } = await clienteAxios.post(
+        `gastos/nuevo-supermercado/`,
+        info
+      );
+
+      toast.success(data.msg, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (error) {
+      toast.error(error.response.data.msg, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
+  const [supermercados, setSupermercados] = useState([]);
+
+  const obtenerSupermercados = async (id) => {
+    try {
+      // const token = localStorage.getItem("token");
+      // if (!token) return;
+      // const config = {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      // };
+      const { data } = await clienteAxios.get(
+        `gastos/obtener-supermercados/${id}`,
+        {}
+      );
+
+      setSupermercados(data);
+    } catch (error) {
+      toast.error(error.response.data.msg, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
+  const [productosMercado, setProductosMercado] = useState([]);
+
+  const obtenerProductosMercado = async (id) => {
+    try {
+      // const token = localStorage.getItem("token");
+      // if (!token) return;
+      // const config = {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      // };
+      const { data } = await clienteAxios.get(
+        `gastos/obtener-productos-mercado/${id}`,
+        {}
+      );
+
+      setProductosMercado(data);
+    } catch (error) {
+      toast.error(error.response.data.msg, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
+  const nuevoProductoMercado = async (nombreSubCategoria, usuario) => {
+    const info = {
+      nombreSubCategoria,
+      usuario,
+    };
+
+    try {
+      // const token = localStorage.getItem("token");
+      // if (!token) return;
+      // const config = {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      // };
+      const { data } = await clienteAxios.post(`gastos/nuevo-producto/`, info);
+
+      toast.success(data.msg, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (error) {
+      toast.error(error.response.data.msg, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
+  const nuevoGastoSupermercado = async (gasto) => {
+    try {
+      // const token = localStorage.getItem("token");
+      // if (!token) return;
+      // const config = {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      // };
+      const { data } = await clienteAxios.post(
+        `gastos/nuevo-gasto-supermercado/`,
+        gasto
+      );
+
+      toast.success(data.msg, {
+        position: "top-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } catch (error) {
+      toast.error(error.response.data.msg, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
   return (
     <GastosContext.Provider
       value={{
@@ -497,6 +893,57 @@ const GastosProvider = ({ children }) => {
         dash,
         obtenerDash,
         eliminarGasto,
+        handleModalNuevaTarjeta,
+        modalNuevaTarjeta,
+        nombreSubCategoria,
+        setNombreSubCategoria,
+        handleModalSubCategoria,
+        modalSubCategoria,
+        nuevaSubCategoria,
+        eliminarSubCategoria,
+        handleModalEditarSubCategoria,
+        modalEditarSubCategoria,
+        editarSubCategoria,
+        idSubCategoria,
+        setIdSubCategoria,
+        handleModalGasto0,
+        modalGasto0,
+        categoriaMercado,
+        obtenerCategoriaMercado,
+        handleModalMercado,
+        modalMercado,
+        nuevoSupermercado,
+        handleModalSuperMercado,
+        modalNuevoSuperMercado,
+        nombreSupermercado,
+        setNombreSupermercado,
+        direccionSupermercado,
+        setDireccionSupermercado,
+        supermercados,
+        obtenerSupermercados,
+        productosMercado,
+        obtenerProductosMercado,
+        idProductoFiltrado,
+        setIdProductoFiltrado,
+        handleModalNuevoProductoMercado,
+        modalNuevoProductoMercado,
+        nuevoProductoMercado,
+        registrarProductos,
+        setRegistrarProductos,
+
+        productosSeleccionados,
+        setProductosSeleccionados,
+        handleModalImporteProducto,
+        modalImporteProducto,
+        nombreProd,
+        setNombreProd,
+        idProducto,
+        setIdProducto,
+        idSuperMercado,
+        setIdSuperMercado,
+        importeProducto,
+        setImporteProducto,
+        nuevoGastoSupermercado,
       }}
     >
       {children}

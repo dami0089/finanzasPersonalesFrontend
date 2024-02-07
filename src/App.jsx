@@ -13,6 +13,7 @@ import RecordarPass from "./components/login/recordarPass";
 import NuevaPass from "./components/login/nuevaPass";
 import RutaProtegida from "./layouts/RutaProtegida";
 import NuevaContra from "./components/login/NuevaContra";
+import { Tarjetas } from "./components/Tarjetas";
 
 function App() {
   return (
@@ -28,6 +29,9 @@ function App() {
         </Route>
         <Route path="/configuracion" element={<RutaProtegida />}>
           <Route index element={<Configuracion />} />
+        </Route>
+        <Route path="/tarjetas" element={<RutaProtegida />}>
+          <Route index element={<Tarjetas />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />{" "}
         {/* Redirige todas las rutas no encontradas a '/' */}

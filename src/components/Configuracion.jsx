@@ -9,11 +9,19 @@ import Swal from "sweetalert2";
 import useUsuarios from "../hooks/useUsuarios";
 import { useNavigate } from "react-router-dom";
 import ModalEditarUsuario from "./ModalEditarUsuario";
+import ModalNuevaSubCategoria from "./ModalNuevaSubCategoria";
+import ModalEditarSubCategoria from "./ModalEditarSubCategoria";
+import Mercado from "./Mercado";
 
 const Configuracion = () => {
   const [seccionActiva, setSeccionActiva] = useState("miPerfil");
 
-  const { modalCategoria, modalEditarCategoria } = useGastos();
+  const {
+    modalCategoria,
+    modalEditarCategoria,
+    modalSubCategoria,
+    modalEditarSubCategoria,
+  } = useGastos();
   const { modalEditarDatos } = useUsuarios();
   const { setAuth } = useUsuarios();
   const navigate = useNavigate();
@@ -24,6 +32,8 @@ const Configuracion = () => {
         return <MiPerfil />;
       case "categorias":
         return <Categorias />;
+      case "mercado":
+        return <Mercado />;
       default:
         return <MiPerfil />;
     }
@@ -49,9 +59,9 @@ const Configuracion = () => {
 
   return (
     <>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-20 h-full">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 mt-20 mb-8 min-h-screen">
         <ToastContainer pauseOnFocusLoss={true} />
-        <div className="flex flex-col md:flex-row bg-white shadow-xl rounded-lg mx-4 md:mx-0">
+        <div className="flex flex-col md:flex-row bg-white shadow-xl rounded-lg mx-4 md:mx-0 min-h-full">
           {/* Sidebar */}
           <div className="w-full md:w-1/4 bg-blue-50 p-5 border-r border-gray-200">
             <ul className="space-y-2">
@@ -76,6 +86,16 @@ const Configuracion = () => {
                 Categorías
               </li>
               <li
+                className={`cursor-pointer p-2 hover:bg-blue-600 hover:text-white rounded ${
+                  seccionActiva === "mercado"
+                    ? "bg-blue-500 text-white"
+                    : "text-gray-700"
+                }`}
+                onClick={() => setSeccionActiva("mercado")}
+              >
+                Mercado
+              </li>
+              <li
                 className="cursor-pointer p-2 hover:bg-red-600 hover:text-white rounded text-gray-700"
                 onClick={(e) => handleCerrarSesion(e)}
               >
@@ -85,12 +105,16 @@ const Configuracion = () => {
           </div>
           {/* Contenido Principal */}
 
-          <div className="w-full md:w-3/4 p-5">{renderSeccion()}</div>
+          <div className="w-full md:w-3/4 p-5 overflow-y-auto">
+            {renderSeccion()}
+          </div>
         </div>
 
         {modalCategoria ? <ModalNuevaCategoria /> : null}
         {modalEditarCategoria ? <ModalEditarCategoria /> : null}
         {modalEditarDatos ? <ModalEditarUsuario /> : null}
+        {modalSubCategoria ? <ModalNuevaSubCategoria /> : null}
+        {modalEditarSubCategoria ? <ModalEditarSubCategoria /> : null}
       </div>
     </>
   );

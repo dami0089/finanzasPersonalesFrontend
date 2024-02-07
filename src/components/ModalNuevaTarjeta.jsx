@@ -5,10 +5,10 @@ import { toast } from "react-toastify";
 import useGastos from "../hooks/useGastos";
 import useUsuarios from "../hooks/useUsuarios";
 
-const ModalNuevoGasto = () => {
+const ModalNuevaTarjeta = () => {
   const {
-    modalGasto,
-    handleModalGasto,
+    handleModalNuevaTarjeta,
+    modalNuevaTarjeta,
     categorias,
     obtenerCategorias,
     nuevoGasto,
@@ -23,8 +23,6 @@ const ModalNuevoGasto = () => {
     setCategoriaGasto,
     importeGasto,
     setImporteGasto,
-    idSubCategoria,
-    setIdSubCategoria,
   } = useGastos();
 
   const { auth } = useUsuarios();
@@ -74,15 +72,15 @@ const ModalNuevoGasto = () => {
     setDescripcionGasto("");
     setCategoriaGasto("");
     setImporteGasto("");
-    handleModalGasto();
+    modalNuevaTarjeta();
   };
 
   return (
-    <Transition.Root show={modalGasto} as={Fragment}>
+    <Transition.Root show={modalNuevaTarjeta} as={Fragment}>
       <Dialog
         as="div"
         className="fixed inset-0 z-50 overflow-y-auto"
-        onClose={handleModalGasto}
+        onClose={handleModalNuevaTarjeta}
       >
         <div className="flex min-h-screen items-end justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
           <Transition.Child
@@ -119,7 +117,7 @@ const ModalNuevoGasto = () => {
                 <button
                   type="button"
                   className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  onClick={handleModalGasto}
+                  onClick={handleModalNuevaTarjeta}
                 >
                   <span className="sr-only">Cerrar</span>
                   <svg
@@ -182,11 +180,7 @@ const ModalNuevoGasto = () => {
                           id="tipo"
                           className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
                           value={conceptoGasto}
-                          onChange={(e) => {
-                            setConceptoGasto(e.target.value);
-                            setIdSubCategoria("");
-                            setCategoriaGasto("");
-                          }}
+                          onChange={(e) => setConceptoGasto(e.target.value)}
                         >
                           <option value="">--Seleccionar--</option>
 
@@ -219,36 +213,23 @@ const ModalNuevoGasto = () => {
                       <div className="mb-1">
                         <label
                           className="text-sm font-bold uppercase text-gray-700"
-                          htmlFor="categoria"
+                          htmlFor="tipo"
                         >
-                          Categoría
+                          Categoria
                         </label>
                         <select
-                          id="categoria"
+                          id="tipo"
                           className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
                           value={categoriaGasto}
-                          onChange={(e) => {
-                            setCategoriaGasto(e.target.value);
-                            setIdSubCategoria(""); // Asegúrate de tener este estado definido para resetear la subcategoría seleccionada
-                          }}
-                          disabled={conceptoGasto === ""}
+                          onChange={(e) => setCategoriaGasto(e.target.value)}
+                          disabled={conceptoGasto === "" ? true : false}
                         >
                           <option value="">--Seleccionar--</option>
+
                           {categorias
                             .filter(
                               (categoria) => categoria.subCat === conceptoGasto
-                            )
-                            .filter((categoria) => {
-                              const nombreCategoria =
-                                categoria.nombre.toLowerCase();
-                              // Excluir categorías con nombres específicos
-                              return !(
-                                nombreCategoria === "supermercado" ||
-                                nombreCategoria === "super mercado" ||
-                                nombreCategoria === "supermercado" ||
-                                nombreCategoria === "super mercado"
-                              );
-                            })
+                            ) // Filtra las categorías basándose en si son ingresos o gastos
                             .map((categoria) => (
                               <option key={categoria._id} value={categoria._id}>
                                 {categoria.nombre}
@@ -256,34 +237,6 @@ const ModalNuevoGasto = () => {
                             ))}
                         </select>
                       </div>
-
-                      {/* Campo de subcategoría que se muestra solo si la categoría seleccionada tiene subcategorías */}
-                      {categorias.find((cat) => cat._id === categoriaGasto)
-                        ?.subCategorias?.length > 0 && (
-                        <div className="mb-1">
-                          <label
-                            className="text-sm font-bold uppercase text-gray-700"
-                            htmlFor="subCategoria"
-                          >
-                            Subcategoría
-                          </label>
-                          <select
-                            id="subCategoria"
-                            className="mt-2 w-full rounded-md border-2 p-2 placeholder-gray-400"
-                            value={idSubCategoria}
-                            onChange={(e) => setIdSubCategoria(e.target.value)}
-                          >
-                            <option value="">--Seleccionar--</option>
-                            {categorias
-                              .find((cat) => cat._id === categoriaGasto)
-                              ?.subCategorias.map((subCat) => (
-                                <option key={subCat._id} value={subCat._id}>
-                                  {subCat.nombre}
-                                </option>
-                              ))}
-                          </select>
-                        </div>
-                      )}
 
                       <div className="mb-1">
                         <label
@@ -319,4 +272,4 @@ const ModalNuevoGasto = () => {
   );
 };
 
-export default ModalNuevoGasto;
+export default ModalNuevaTarjeta;

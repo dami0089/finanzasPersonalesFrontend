@@ -3,9 +3,13 @@ import useGastos from "../hooks/useGastos";
 import formatearFecha from "../helpers/formatearFecha";
 import Swal from "sweetalert2";
 import useUsuarios from "../hooks/useUsuarios";
-import { toast } from "react-toastify";
+import {
+  ArrowsRightLeftIcon,
+  PlusIcon,
+} from "../../node_modules/@heroicons/react/16/solid/esm/index";
+import ModalNuevaTarjeta from "./ModalNuevaTarjeta";
 
-export const RecentTransactions = () => {
+export const Tarjetas = () => {
   const {
     gastos,
     obtenerGastos,
@@ -19,6 +23,8 @@ export const RecentTransactions = () => {
     setImporteGasto,
     setIdGastoEditar,
     eliminarGasto,
+    modalNuevaTarjeta,
+    handleModalNuevaTarjeta,
   } = useGastos();
 
   const { auth } = useUsuarios();
@@ -66,26 +72,9 @@ export const RecentTransactions = () => {
     descripcion,
     categoria,
     importe,
-    id,
-    supermercado
+    id
   ) => {
     e.preventDefault();
-    if (supermercado) {
-      toast.error(
-        "No se pueden editar gastos de supermercado, borralo y hacelo nuevamente",
-        {
-          position: "top-right",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        }
-      );
-      return;
-    }
     setFechaGasto(fecha),
       setConceptoGasto(concepto),
       setDescripcionGasto(descripcion),
@@ -114,14 +103,33 @@ export const RecentTransactions = () => {
     });
   };
 
+  const handleNueva = (e) => {
+    e.preventDefault();
+    handleModalNuevaTarjeta();
+  };
+
   return (
-    <div className="bg-white shadow-md rounded-lg p-4">
-      <h2 className="text-lg font-semibold text-center mb-4">
-        Transacciones Recientes
-      </h2>
+    <div className="bg-white shadow-md rounded-lg p-4 mt-5">
+      <div className="flex justify-between">
+        <h2 className="text-lg font-semibold text-center mb-4">
+          Tarjetas de Credito
+        </h2>
+
+        <div className="hidden md:flex">
+          <button
+            className="bg-blue-500 hover:bg-blue-700 rounded text-white font-bold py-2 px-4 focus:outline-none focus:shadow-outline mr-2 inline-flex items-center"
+            onClick={(e) => handleNueva(e)}
+          >
+            <PlusIcon className="w-5 h-5 " />
+          </button>
+        </div>
+      </div>
+
+      <ArrowsRightLeftIcon className="h-8 w-8 text-green-400 mt-8" />
+
       {gastos.length > 0 ? (
         <>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto mt-10">
             <table className="min-w-full leading-normal">
               <thead>
                 <tr>
@@ -196,8 +204,7 @@ export const RecentTransactions = () => {
                               transaction.descripcion,
                               transaction.categoria,
                               transaction.importe,
-                              transaction._id,
-                              transaction.supermercado
+                              transaction._id
                             )
                           }
                         >
@@ -255,9 +262,10 @@ export const RecentTransactions = () => {
         </>
       ) : (
         <p className="text-center italic text-gray-400">
-          Aun no tienes transacciones para mostrar, por favor ingresa una nueva.
+          Aun no tienes tarjetas de credito, agrega una
         </p>
       )}
+      {modalNuevaTarjeta ? <ModalNuevaTarjeta /> : ""}
     </div>
   );
 };

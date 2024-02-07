@@ -3,11 +3,8 @@ import useGastos from "../hooks/useGastos";
 import Swal from "sweetalert2";
 import useUsuarios from "../hooks/useUsuarios";
 
-const Categorias = () => {
+const Mercado = () => {
   const {
-    handleModalCategoria,
-    categorias,
-    obtenerCategorias,
     setNombreCategoria,
     setIdCategoria,
     handleModalEditarCategoria,
@@ -17,13 +14,15 @@ const Categorias = () => {
     handleModalSubCategoria,
     eliminarSubCategoria,
     handleModalEditarSubCategoria,
+    categoriaMercado,
+    obtenerCategoriaMercado,
   } = useGastos();
 
   const { auth } = useUsuarios();
 
   useEffect(() => {
     const traerCategorias = async () => {
-      await obtenerCategorias(auth._id);
+      await obtenerCategoriaMercado(auth._id);
     };
     traerCategorias();
   }, []);
@@ -31,17 +30,12 @@ const Categorias = () => {
   useEffect(() => {
     const traerCategorias = async () => {
       if (actualizarListadoCategorias) {
-        await obtenerCategorias(auth._id);
+        await obtenerCategoriaMercado(auth._id);
         setActualizarListadoCategorias(false);
       }
     };
     traerCategorias();
   }, [actualizarListadoCategorias]);
-
-  const abrirModal = (e) => {
-    e.preventDefault();
-    handleModalCategoria();
-  };
 
   const handleEditar = (e, id, nombre) => {
     e.preventDefault();
@@ -108,13 +102,7 @@ const Categorias = () => {
     <>
       <div className="bg-white shadow-md rounded-lg p-4">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold">Categorías</h2>
-          <button
-            className="bg-blue-500 ml-8 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
-            onClick={(e) => abrirModal(e)}
-          >
-            Agregar Categoría
-          </button>
+          <h2 className="text-lg font-semibold">Mercado</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full leading-normal">
@@ -124,7 +112,7 @@ const Categorias = () => {
                   Categoría
                 </th>
                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Sub Categoria
+                  Producto
                 </th>
                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Acción
@@ -132,10 +120,10 @@ const Categorias = () => {
               </tr>
             </thead>
             <tbody>
-              {categorias.map((categoria) => (
+              {categoriaMercado.map((categoria) => (
                 <React.Fragment key={categoria._id}>
                   <tr>
-                    <td className="px-5 py-3 border-b border-gray-200 text-sm font-bold uppercase">
+                    <td className="px-5 py-3 border-b border-gray-200 text-sm font-bold uppercase text-center">
                       {categoria.nombre}
                     </td>
                     <td className="px-5 py-3 border-b border-gray-200 text-sm">
@@ -281,4 +269,4 @@ const Categorias = () => {
   );
 };
 
-export default Categorias;
+export default Mercado;
